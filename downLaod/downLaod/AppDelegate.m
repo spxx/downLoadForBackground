@@ -7,6 +7,8 @@
 //
 
 #import "AppDelegate.h"
+#import "ViewController.h"
+#import "YCDownloadSession.h"
 
 @interface AppDelegate ()
 
@@ -17,7 +19,29 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
+    
+    ViewController  *vc = [[ViewController alloc] init];
+    self.window.rootViewController = vc;
+    [self.window makeKeyAndVisible];
+    //注册通知
+    if ([[UIDevice currentDevice].systemName doubleValue]>=8.0) {
+        UIUserNotificationSettings *settings = [UIUserNotificationSettings settingsForTypes:UIUserNotificationTypeAlert | UIUserNotificationTypeBadge | UIUserNotificationTypeSound categories:nil];
+        [application registerUserNotificationSettings:settings];
+    }
+    
     return YES;
+}
+
+
+-(void)application:(UIApplication *)application didReceiveLocalNotification:(nonnull UILocalNotification *)notification{
+    NSLog(@"%s",__func__);
+    
+}
+
+
+//接受到后台下载完成
+-(void)application:(UIApplication *)application handleEventsForBackgroundURLSession:(nonnull NSString *)identifier completionHandler:(nonnull void (^)(void))completionHandler{
+    [[YCDownloadSession downloadSession] addCompletionHandler:completionHandler identifier:identifier];
 }
 
 
